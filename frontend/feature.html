@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RailSense — Feature view</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="feature.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="index.html" aria-label="Open RailSense dashboard"><div class="brand-mark"><span></span><span></span><span></span></div><div><strong>RailSense</strong><small>Dynamic Train ETA</small></div></a>
+      <div class="sidebar-section">
+        <p class="sidebar-label">Workspace</p>
+        <nav class="nav-list" aria-label="Main navigation">
+          <a class="nav-item" href="index.html"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</a>
+          <a class="nav-item" data-view="trains" href="feature.html?view=trains"><svg viewBox="0 0 24 24"><path d="M5 17h14M7 17V5h10v12M5 21l2-4m12 4-2-4M7 9h10M8 13h.01M16 13h.01"/></svg>Live trains <b class="nav-count">12</b></a>
+          <a class="nav-item" data-view="network" href="feature.html?view=network"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8 7.5 16 16.5M18 6H9M18 6v8"/></svg>Network view</a>
+          <a class="nav-item" data-view="analytics" href="feature.html?view=analytics"><svg viewBox="0 0 24 24"><path d="M4 19V5m0 14h17M8 16v-4m4 4V8m4 8V5m4 11v-7"/></svg>Analytics</a>
+        </nav>
+      </div>
+      <div class="sidebar-footer"><div class="system-status"><i class="pulse"></i><span><strong>Forecast engine</strong><small>Operational · 99.8% uptime</small></span></div><button class="profile"><span class="avatar">AK</span><span><strong>Arjun Kapoor</strong><small>Control room lead</small></span><span class="more">•••</span></button></div>
+    </aside>
+    <main class="main-content feature-content">
+      <div class="topbar"><div class="breadcrumb"><span>Workspace</span><b>/</b><strong id="breadcrumbTitle">Feature view</strong></div><div class="live-indicator"><i class="pulse"></i>Live system</div></div>
+      <section class="feature-hero"><p class="eyebrow">RAILSENSE INTELLIGENCE</p><h1 id="featureTitle">Live train movement</h1><p id="featureSubtitle" class="subtitle">Monitor the network from a focused operational view.</p></section>
+      <section class="feature-grid" id="featureGrid"></section>
+    </main>
+  </div>
+  <script src="feature.js"></script>
+</body>
+</html>

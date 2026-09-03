@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="RailSense dynamic ETA forecasting dashboard for coaching trains." />
+  <title>RailSense — Dynamic Train ETA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+       <a class="brand" href="index.html" aria-label="Open RailSense dashboard">
+        <div class="brand-mark"><span></span><span></span><span></span></div>
+        <div><strong>RailSense</strong><small>Dynamic Train ETA</small></div>
+      </a>
+
+      <div class="sidebar-section">
+        <p class="sidebar-label">Workspace</p>
+        <nav class="nav-list" aria-label="Main navigation">
+          <a class="nav-item active" href="#overview"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</a>
+          <a class="nav-item" href="feature.html?view=trains"><svg viewBox="0 0 24 24"><path d="M5 17h14M7 17V5h10v12M5 21l2-4m12 4-2-4M7 9h10M8 13h.01M16 13h.01"/></svg>Live trains <b class="nav-count">12</b></a>
+          <a class="nav-item" href="feature.html?view=network"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8 7.5 16 16.5M18 6H9M18 6v8"/></svg>Network view</a>
+          <a class="nav-item" href="feature.html?view=analytics"><svg viewBox="0 0 24 24"><path d="M4 19V5m0 14h17M8 16v-4m4 4V8m4 8V5m4 11v-7"/></svg>Analytics</a>
+        </nav>
+      </div>
+
+      <div class="sidebar-section saved-section">
+        <p class="sidebar-label">Saved views</p>
+        <button class="saved-view" data-target="network"><i class="dot green"></i>West corridor <span>›</span></button>
+        <button class="saved-view" data-target="trains"><i class="dot amber"></i>Arrivals · next 2h <span>›</span></button>
+        <button class="saved-view" data-target="trains" data-filter="At risk"><i class="dot red"></i>At risk services <span>›</span></button>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="system-status"><i class="pulse"></i><span><strong>Forecast engine</strong><small>Operational · 99.8% uptime</small></span></div>
+        <button class="profile"><span class="avatar">AK</span><span><strong>Arjun Kapoor</strong><small>Control room lead</small></span><span class="more">•••</span></button>
+      </div>
+    </aside>
+
+    <main class="main-content" id="overview">
+      <header class="topbar">
+        <div class="breadcrumb"><span>Operations</span><b>/</b><strong>Network overview</strong></div>
+        <div class="top-actions">
+          <span class="live-indicator"><i class="pulse"></i>Live data</span>
+          <span class="updated">Updated just now</span>
+          <button class="icon-button" aria-label="Notifications"><svg viewBox="0 0 24 24"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg><em></em></button>
+          <button class="icon-button" aria-label="Settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-1.8 1.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.2h-2.5V20a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1-1.8-1.8.1-.1A1.7 1.7 0 0 0 8 15a1.7 1.7 0 0 0-1.6-1H6v-2.5h.2a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1 1.8-1.8.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.6v-.2h2.5v.2a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1 1.8 1.8-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.2V14h-.2a1.7 1.7 0 0 0-1.6 1Z"/></svg></button>
+        </div>
+      </header>
+
+      <div class="page-heading">
+        <div><p class="eyebrow">Thursday, 03 September 2026 <span>•</span> 18:30 IST</p><h1>Good evening, Arjun <span>✦</span></h1><p class="subtitle">Here’s the latest on your coaching network.</p></div>
+        <button class="primary-button" id="refreshButton"><svg viewBox="0 0 24 24"><path d="M20 11a8.1 8.1 0 0 0-14.9-3L3 11m0 0V5m0 6h6M4 13a8.1 8.1 0 0 0 14.9 3L21 13m0 0v6m0-6h-6"/></svg>Refresh forecast</button>
+      </div>
+
+      <section class="stats-grid" aria-label="Network summary">
+        <article class="stat-card"><div class="stat-top"><span class="stat-icon blue"><svg viewBox="0 0 24 24"><path d="M5 17h14M7 17V5h10v12M5 21l2-4m12 4-2-4M7 9h10"/></svg></span><span class="trend up">↑ 8.4%</span></div><p>Active services</p><strong>128</strong><small>vs 118 yesterday</small></article>
+        <article class="stat-card"><div class="stat-top"><span class="stat-icon purple"><svg viewBox="0 0 24 24"><path d="M4 19V5m0 14h17M8 16v-4m4 4V8m4 8V5m4 11v-7"/></svg></span><span class="trend up">↑ 2.1%</span></div><p>On-time performance</p><strong>86.4<span>%</span></strong><small>+3.2% from last week</small></article>
+        <article class="stat-card"><div class="stat-top"><span class="stat-icon amber"><svg viewBox="0 0 24 24"><path d="M12 7v5l3 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg></span><span class="trend down">↓ 4.7%</span></div><p>Avg. delay</p><strong>06<span>m</span> 42<span>s</span></strong><small>vs 07m 10s yesterday</small></article>
+        <article class="stat-card"><div class="stat-top"><span class="stat-icon green"><svg viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></svg></span><span class="trend neutral">Stable</span></div><p>Forecast accuracy</p><strong>94.8<span>%</span></strong><small>Across 1,284 predictions</small></article>
+      </section>
+
+      <section class="panel weather-panel" id="weather">
+        <div class="panel-heading"><div><h2>Weather intelligence map</h2><p>Live conditions along the coaching network</p></div><span class="live-indicator"><i class="pulse"></i>Live weather</span></div>
+        <div class="weather-toolbar"><div class="weather-tabs" role="group" aria-label="Weather layer"><button class="weather-tab active" data-weather="temperature">Temperature</button><button class="weather-tab" data-weather="wind">Wind</button><button class="weather-tab" data-weather="pressure">Pressure</button><button class="weather-tab" data-weather="humidity">Humidity</button></div><span class="weather-note"><i class="dot green"></i>Forecast horizon: next 3 hours</span></div>
+        <div class="weather-map"><div id="leafletMap" aria-label="Interactive India weather map"></div><div class="weather-legend"><strong id="legendTitle">Temperature</strong><div class="legend-gradient"></div><div class="legend-values"><span>20°</span><span>25°</span><span>30°</span><span>35°</span></div></div><div class="weather-card"><div class="weather-card-top"><span class="weather-symbol">☀</span><span><strong>New Delhi</strong><small>Clear skies · updated 2m ago</small></span></div><div class="weather-reading"><strong id="readingValue">28°</strong><span id="readingLabel">Temperature</span></div><div class="weather-details"><span>Wind <b>14 km/h</b></span><span>Humidity <b>64%</b></span><span>Pressure <b>1008 hPa</b></span></div></div></div>
+      </section>
+
+      <section class="panel route-summary is-hidden" id="routeSummary">
+        <div class="route-summary-heading"><div><h2>Railway route intelligence</h2><p>Enter a train name or number above to display its route on the map.</p></div><span class="route-stop-total"><strong id="routeStopCount">0</strong> stations</span></div>
+        <div class="route-selector" role="group" aria-label="Matched train route">
+          <button class="route-option" data-route="rajdhani"><strong>12952 Rajdhani Express</strong><span>New Delhi → Mumbai · <b>Superfast</b></span></button>
+          <button class="route-option" data-route="shatabdi"><strong>12045 Shatabdi Express</strong><span>New Delhi → Chandigarh · <b>Premium day service</b></span></button>
+          <button class="route-option" data-route="duronto"><strong>12220 Duronto Express</strong><span>Pune → Mumbai · <b>Non-stop</b></span></button>
+          <button class="route-option" data-route="garib"><strong>12910 Garib Rath</strong><span>Jaipur → New Delhi · <b>Express</b></span></button>
+          <button class="route-option" data-route="tejas"><strong>82902 Tejas Express</strong><span>Ahmedabad → Mumbai · <b>Premium</b></span></button>
+        </div>
+        <div class="route-detail"><div><span class="route-label">Origin</span><strong id="routeOrigin">-</strong></div><span class="route-arrow">→</span><div><span class="route-label">Destination</span><strong id="routeDestination">-</strong></div><div class="route-detail-divider"></div><div><span class="route-label">Stations</span><strong id="routeStops">-</strong></div><div><span class="route-label">Scheduled stops</span><strong id="routeHalts">-</strong></div></div>
+        <div class="station-strip" id="stationStrip"></div>
+      </section>
+
+      <section class="forecast-lab" id="forecastLab" aria-label="ETA forecast lab">
+        <article class="panel confidence-card">
+          <div class="panel-heading"><div><h2>ETA confidence score</h2><p>How reliable is the current arrival forecast?</p></div><span class="confidence-badge" id="confidenceBadge">92%</span></div>
+          <div class="confidence-meter"><span id="confidenceBar"></span></div>
+          <div class="confidence-meta"><strong id="confidenceLabel">High confidence</strong><span id="confidenceRoute">Network forecast</span></div>
+          <ul class="confidence-reasons" id="confidenceReasons"><li>Clear conditions along the route</li><li>Traffic signals operating normally</li><li>Recent GPS updates received</li></ul>
+        </article>
+        <article class="panel simulator-card">
+          <div class="panel-heading"><div><h2>What-if delay simulator</h2><p>Test conditions that could change the arrival time.</p></div><span class="simulator-icon">⌁</span></div>
+          <div class="simulator-controls">
+            <label>Weather impact <output id="weatherDelayValue">0 min</output><input id="weatherDelay" type="range" min="0" max="30" value="0" /></label>
+            <label>Network congestion <output id="congestionDelayValue">0 min</output><input id="congestionDelay" type="range" min="0" max="25" value="0" /></label>
+            <label>Signal disruption <output id="signalDelayValue">0 min</output><input id="signalDelay" type="range" min="0" max="20" value="0" /></label>
+          </div>
+          <div class="simulation-result"><span>Projected arrival</span><strong id="simulatedEta">19:04</strong><b id="simulatedDelay">On schedule</b></div>
+          <button class="ghost-button" id="resetSimulator" type="button">Reset simulation <span>↺</span></button>
+        </article>
+      </section>
+
+      <section class="content-grid">
+        <article class="panel train-panel" id="trains">
+          <div class="panel-heading"><div><h2>Live train movement</h2><p>Real-time ETA across your network</p></div><button class="ghost-button">View all trains <span>→</span></button></div>
+          <div class="filter-row"><div class="search-box"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 5 5"/></svg><input id="trainSearch" placeholder="Search train or station..." /></div><button class="filter-button active-filter">All trains <span>12</span></button><button class="filter-button">At risk <span>3</span></button><button class="filter-button">On time <span>9</span></button></div>
+          <div class="table-wrap"><table><thead><tr><th>Service</th><th>Route</th><th>Next stop</th><th>ETA</th><th>Status</th></tr></thead><tbody id="trainTable">
+            <tr data-search="12952 rajdhani express new delhi mumbai surat"><td><div class="service"><span class="train-badge">12952</span><strong>Rajdhani Express</strong></div></td><td>New Delhi <span class="arrow">→</span> Mumbai</td><td>Surat <small>Platform 4</small></td><td><strong>19:04</strong><small>in 34 min</small></td><td><span class="status on-time"><i></i>On time</span></td></tr>
+            <tr data-search="12045 shatabdi express new delhi chandigarh ambala"><td><div class="service"><span class="train-badge">12045</span><strong>Shatabdi Express</strong></div></td><td>New Delhi <span class="arrow">→</span> Chandigarh</td><td>Ambala Cantt <small>Platform 2</small></td><td><strong>18:42</strong><small>in 12 min</small></td><td><span class="status on-time"><i></i>On time</span></td></tr>
+            <tr data-search="12220 duronto express pune mumbai lonavala"><td><div class="service"><span class="train-badge">12220</span><strong>Duronto Express</strong></div></td><td>Pune <span class="arrow">→</span> Mumbai</td><td>Lonavala <small>Platform 1</small></td><td><strong>19:26</strong><small class="delay-text">+08 min</small></td><td><span class="status delayed"><i></i>Delayed</span></td></tr>
+            <tr data-search="12910 garib rath jaipur delhi gurgaon"><td><div class="service"><span class="train-badge">12910</span><strong>Garib Rath</strong></div></td><td>Jaipur <span class="arrow">→</span> New Delhi</td><td>Gurgaon <small>Platform 6</small></td><td><strong>19:18</strong><small>in 48 min</small></td><td><span class="status on-time"><i></i>On time</span></td></tr>
+            <tr data-search="82902 tejas express ahmedabad mumbai vadodara"><td><div class="service"><span class="train-badge">82902</span><strong>Tejas Express</strong></div></td><td>Ahmedabad <span class="arrow">→</span> Mumbai</td><td>Vadodara <small>Platform 3</small></td><td><strong>20:02</strong><small class="delay-text">+14 min</small></td><td><span class="status delayed"><i></i>Delayed</span></td></tr>
+          </tbody></table></div>
+        </article>
+
+        <article class="panel network-panel" id="network">
+          <div class="panel-heading"><div><h2>Network pulse</h2><p>Service health by corridor</p></div><button class="more-button">•••</button></div>
+          <div class="network-map"><div class="map-grid"></div><span class="map-label label-north">NORTH</span><span class="map-label label-west">WEST</span><span class="map-label label-east">EAST</span><span class="map-label label-south">SOUTH</span><svg class="route-lines" viewBox="0 0 400 250"><path d="M62 52 C120 80 130 132 196 119 S275 72 344 94" /><path d="M196 119 C183 167 210 190 255 216" /><path d="M196 119 C237 144 293 153 344 196" /><path d="M112 207 C158 181 160 151 196 119" /></svg><i class="map-point p1 green"></i><i class="map-point p2 green"></i><i class="map-point p3 amber"></i><i class="map-point p4 green"></i><i class="map-point p5 red"></i><i class="map-point p6 green"></i></div>
+          <div class="corridor-list"><div><span><i class="dot green"></i>Western corridor</span><strong>92%</strong></div><div><span><i class="dot green"></i>Northern corridor</span><strong>88%</strong></div><div><span><i class="dot amber"></i>Central corridor</span><strong>79%</strong></div><div><span><i class="dot red"></i>Eastern corridor</span><strong>68%</strong></div></div>
+        </article>
+      </section>
+
+      <section class="bottom-grid" id="analytics">
+        <article class="panel chart-panel"><div class="panel-heading"><div><h2>On-time performance</h2><p>Network average · last 7 days</p></div><select aria-label="Chart period"><option>Last 7 days</option><option>Last 30 days</option></select></div><div class="chart"><div class="y-axis"><span>100%</span><span>90%</span><span>80%</span><span>70%</span></div><div class="chart-area"><div class="grid-lines"><i></i><i></i><i></i><i></i></div><svg viewBox="0 0 700 190" preserveAspectRatio="none"><defs><linearGradient id="area" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#6c7cff" stop-opacity=".28"/><stop offset="100%" stop-color="#6c7cff" stop-opacity="0"/></linearGradient></defs><path class="area-fill" d="M0 139 C45 127 63 143 102 119 S167 105 206 116 S263 82 309 101 S370 76 410 88 S465 58 514 78 S576 50 616 65 S665 38 700 52 V190 H0Z"/><path class="line" d="M0 139 C45 127 63 143 102 119 S167 105 206 116 S263 82 309 101 S370 76 410 88 S465 58 514 78 S576 50 616 65 S665 38 700 52"/></svg><div class="x-axis"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div></div></div></article>
+        <article class="panel alerts-panel"><div class="panel-heading"><div><h2>Attention needed</h2><p>Items that may impact service</p></div><span class="alert-count">3 open</span></div><div class="alert-list"><div class="alert-item"><span class="alert-icon red">!</span><div><strong>Tejas Express · 82902</strong><p>Signal congestion near Surat</p></div><time>4m</time></div><div class="alert-item"><span class="alert-icon amber">!</span><div><strong>Duronto Express · 12220</strong><p>Approaching 8 min delay threshold</p></div><time>12m</time></div><div class="alert-item"><span class="alert-icon blue">↗</span><div><strong>Forecast model updated</strong><p>New weather data incorporated</p></div><time>18m</time></div></div><button class="view-alerts">Review all alerts <span>→</span></button></article>
+      </section>
+      <footer><span>RailSense Forecast Engine v2.4.1</span><span>Data refreshes every 30 seconds <i class="pulse"></i></span></footer>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status">Forecast refreshed successfully</div>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script src="app.js"></script>
+</body>
+</html>
